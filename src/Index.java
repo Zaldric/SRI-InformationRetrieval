@@ -93,7 +93,6 @@ class Index implements Serializable{
     void calculateWeights() {
 
         for (Map.Entry<String, Pair<Double, HashMap<String, Double>>> entry : words.entrySet()) {
-
             double sum = 0;
             double log = Math.log10( (double) frequencies.size() / entry.getValue().getSecond().size());
             words.get(entry.getKey()).setFirst(log);
@@ -109,7 +108,11 @@ class Index implements Serializable{
             sum = Math.sqrt(sum);
 
             for (Map.Entry<String, Double> entry2 : words.get(entry.getKey()).getSecond().entrySet()) {
-                words.get(entry.getKey()).getSecond().replace(entry2.getKey(), entry2.getValue() / sum);
+                if (sum == 0.0) {
+                    words.get(entry.getKey()).getSecond().replace(entry2.getKey(), 0.0);
+                } else {
+                    words.get(entry.getKey()).getSecond().replace(entry2.getKey(), entry2.getValue() / sum);
+                }
             }
         }
     }

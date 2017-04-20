@@ -202,11 +202,14 @@ public class Main {
             System.out.println("Loading Index...");
             Index index = loadIndex(parameters[1]);
             System.out.println("Done.");
+            System.out.println();
             String line;
             Scanner scan = new Scanner(System.in);
+
+            System.out.println("Enter your query: ");
             line = scan.nextLine();
 
-            while (!line.equals("exit")){
+            do {
 
                 Query query = new Query(index, line);
                 DocumentInfo document;
@@ -231,8 +234,10 @@ public class Main {
                 }
 
                 System.out.println("");
+                System.out.println("Enter your query: ");
                 line = scan.nextLine();
-            }
+
+            } while (!line.equals("exit"));
 
             time_end = System.currentTimeMillis();
             System.out.println("The program has finished in " + (float) (time_end - time_start) / 1000.0 + " seconds.");
