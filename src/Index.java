@@ -10,8 +10,8 @@ class Index implements Serializable{
     /**
      * Creates a new Index object with:
      *
-     * 1- Words: all the stem words of the document's collection.
-     * 2- Documents: the information of the document's collection.
+     * 1- Words: all the stem words of the documents's collection.
+     * 2- Documents: the information of the documents's collection.
      * 3- Frequiencies: the maximun frequency of a word for each document.
      */
     Index() {
@@ -28,7 +28,8 @@ class Index implements Serializable{
      * The HashMap contains all the different words in the collection and for each word there is a Pair with:
      *
      * First: the idf value of that word.
-     * Second: a HashMap with the documents that contains that word and the wn value for the word in that document.
+     * Second: a HashMap with the documents that contains that word and the wn value for the word in that document
+     *         (before calculating the weights, it contains the word frequency in that document).
      *
      * @param word  the word that will be loaded in the index.
      * @param document the document that contains the word.
@@ -83,13 +84,13 @@ class Index implements Serializable{
     }
 
     /**
-     * Normalizes the frequiencies of index's words.
+     * Calculates the weights of the index's words.
      *
      * Calculating for each word:
      * 1- The IDF value for that word.
      * 2- The WN value for that word in each document that contains that word.
      */
-    void normalizeFrequencies() {
+    void calculateWeights() {
 
         for (Map.Entry<String, Pair<Double, HashMap<String, Double>>> entry : words.entrySet()) {
 
@@ -114,7 +115,7 @@ class Index implements Serializable{
     }
 
     /**
-     * Adds all the document's information to the Index with all the relevant information about it.
+     * Adds all the documents's information to the Index with all the relevant information about it.
      *
      * The documentInfo structure is:
      * 1- Title: title of the document.
@@ -152,4 +153,9 @@ class Index implements Serializable{
      */
     int getNumberOfWords() { return words.size(); }
 
+
+    /**
+     * @return A HashMap with all the documents's collection.
+     */
+    HashMap<String, DocumentInfo> getDocuments() { return documents; }
 }

@@ -1,4 +1,3 @@
-import org.apache.commons.io.FilenameUtils;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.*;
@@ -6,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Main {
 
@@ -50,6 +50,27 @@ public class Main {
         Files.write(path, bytes);
     }
 
+    /**
+     * Loads the Index of the document's collection from the path 'index/classes.obj' and returns it.
+     *
+     * @param path the path where the Index.obj is located.
+     * @return     the Index of the document's collection.
+     */
+    private static Index loadIndex(String path) throws IOException {
+        Index index = null;
+        try{
+            FileInputStream fis = new FileInputStream(path);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            index = (Index) ois.readObject();
+            ois.close();
+            fis.close();
+        }catch(FileNotFoundException e){
+            System.out.println("File not found.");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return index;
+    }
 
     public static void main(String[] args) throws Exception {
 
@@ -161,7 +182,7 @@ public class Main {
 
                 System.out.println();
                 System.out.println("Normalizing .... ");
-                util.getIndex().normalizeFrequencies();
+                util.getIndex().calculateWeights();
                 System.out.println("Done.");
                 System.out.println("Saving index .... ");
                 saveIndex(util.getIndex());
@@ -175,7 +196,46 @@ public class Main {
 
         } else {
 
-            System.out.println("Hola");
+            long time_start, time_end;
+            time_start = System.currentTimeMillis();
+
+            System.out.println("Loading Index...");
+            Index index = loadIndex(parameters[1]);
+            System.out.println("Done.");
+            String line;
+            Scanner scan = new Scanner(System.in);
+            line = scan.nextLine();
+
+            while (!line.equals("exit")){
+
+                Query query = new Query(index, line);
+                DocumentInfo document;
+                ArrayList<Pair<String, Double>> top = query.similarities();
+
+                if (!top.isEmpty()) {
+
+                    System.out.println();
+
+                    for (int i = 0; i < top.size() && i < Integer.parseInt(parameters[3]); ++i) {
+                        document = index.getDocuments().get(top.get(i).getFirst());
+                        System.out.println("Number: " + (i + 1) + ".");
+                        System.out.println("Name: '" + top.get(i).getFirst() + "'.");
+                        System.out.println("Similarity: " + top.get(i).getSecond() + ".");
+                        System.out.println("Title: " + document.getTitle() + ".");
+                        System.out.println("Text: " + document.searchFullQuery(query.getQuery()) + ".");
+                        System.out.println();
+                    }
+
+                } else {
+                    System.out.println("No relevant documents found.");
+                }
+
+                System.out.println("");
+                line = scan.nextLine();
+            }
+
+            time_end = System.currentTimeMillis();
+            System.out.println("The program has finished in " + (float) (time_end - time_start) / 1000.0 + " seconds.");
         }
 
     }

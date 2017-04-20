@@ -301,7 +301,7 @@ class Utils {
     /**
      * Copy all the words with their frequencies in an ArrayList and sort them using quicksort.
      *
-     * @return      an array with all the words of the collection sorted highest to lowest (by frequiency).
+     * @return      an array with all the words of the collection sorted highest to lowest (by frequency).
      */
     ArrayList<Pair<String, Double>> getTopWords() {
 

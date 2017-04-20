@@ -39,6 +39,7 @@ class DocumentInfo implements Serializable{
     private void setPhrases(String originalBody) throws Exception {
 
         String[] phrases = originalBody.split("\\.");
+        this.phrases.add(title);
         this.phrases.addAll(Arrays.asList(phrases));
         Utils util = new Utils();
 
@@ -60,7 +61,6 @@ class DocumentInfo implements Serializable{
         }
     }
 
-
     /**
      * Searches the words of a query in the document and returns a String with the first phrase that contains
      * some of the words of the query or an empty String if there is no such sentence.
@@ -68,7 +68,7 @@ class DocumentInfo implements Serializable{
      * @param words the words to search in the document.
      * @return      a String with the first phrase that contains some of the words.
      */
-    String search(String[] words) {
+    String searchFullQuery(String[] words) {
 
         for (int i = 0; i < cleanPhrases.size(); ++i) {
             for (int j = 0; j < words.length; ++j) {
