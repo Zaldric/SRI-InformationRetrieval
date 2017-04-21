@@ -75,6 +75,26 @@ class Query {
         for (Pair<String, Double> element : query) {
             element.setSecond(element.getSecond() / max);
         }
+
+        double wniqSum = 0.0;
+
+        for (Pair<String, Double> element : query) {
+            if (index.get(element.getFirst()) != null) {
+                double idf = index.get(element.getFirst()).getFirst();
+                double wniq = element.getSecond() * idf;
+                wniqSum += wniq * wniq;
+            }
+        }
+
+        wniqSum = Math.sqrt(wniqSum);
+
+        for (Pair<String, Double> element : query) {
+            if (index.get(element.getFirst()) != null) {
+                double idf = index.get(element.getFirst()).getFirst();
+                double wniq = (element.getSecond() * idf) / wniqSum;
+                element.setSecond(wniq);
+            }
+        }
     }
 
     /**
@@ -92,39 +112,35 @@ class Query {
     ArrayList<Pair<String, Double>> similarities() {
 
         if (!query.isEmpty()) {
-            Double wniqSum = 0.0;
 
+            double wniqNorm = 0.0;
             for (Pair<String, Double> element : query) {
+
                 if (index.get(element.getFirst()) != null) {
-                    double idf = index.get(element.getFirst()).getFirst();
-                    double wniq = element.getSecond() * idf;
-                    wniqSum += wniq * wniq;
+                        wniqNorm += element.getSecond() * element.getSecond();
                 }
             }
-
-            wniqSum = Math.sqrt(wniqSum);
+            wniqNorm = Math.sqrt(wniqNorm);
 
             for (Map.Entry<String, DocumentInfo> document : index.getDocuments().entrySet()) {
-                double numerator = 0.0, wnijSum = 0.0;
+                double numerator = 0.0, wnijNorm = 0.0;
                 for (Pair<String, Double> element : query) {
 
                     if (index.get(element.getFirst()) != null) {
 
                         if (index.get(element.getFirst()).getSecond().get(document.getKey()) != null) {
-                            double idf = index.get(element.getFirst()).getFirst();
-                            double wniq = element.getSecond() * idf;
                             double wnij = index.get(element.getFirst()).getSecond().get(document.getKey());
-                            numerator += wniq * wnij;
-                            wnijSum += wnij * wnij;
+                            numerator += element.getSecond() * wnij;
+                            wnijNorm += wnij * wnij;
                         }
                     }
+                }
 
-                    wnijSum = Math.sqrt(wnijSum);
+                wnijNorm = Math.sqrt(wnijNorm);
 
-                    if (numerator != 0.0) {
-                        Double denominator = wniqSum * wnijSum;
-                        results.add(new Pair<>(document.getKey(), numerator / denominator));
-                    }
+                if (numerator != 0.0) {
+                    Double denominator = wniqNorm * wnijNorm;
+                    results.add(new Pair<>(document.getKey(), numerator / denominator));
                 }
             }
 
