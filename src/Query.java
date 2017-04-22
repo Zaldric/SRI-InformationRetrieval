@@ -60,7 +60,8 @@ class Query {
     }
 
     /**
-     * Normalizes the frequencies of the words, dividing each frequency by the maximum word's frequency.
+     * Normalizes the frequencies of the words, dividing each frequency by the maximum word's frequency and calculates
+     * the weight of query's words.
      */
     private void normalizeFrequencies() {
 
@@ -88,11 +89,20 @@ class Query {
 
         wniqSum = Math.sqrt(wniqSum);
 
-        for (Pair<String, Double> element : query) {
-            if (index.get(element.getFirst()) != null) {
-                double idf = index.get(element.getFirst()).getFirst();
-                double wniq = (element.getSecond() * idf) / wniqSum;
-                element.setSecond(wniq);
+        if (wniqSum == 0) {
+
+            for (Pair<String, Double> element : query) {
+                element.setSecond(0.0);
+            }
+
+        } else {
+
+            for (Pair<String, Double> element : query) {
+                if (index.get(element.getFirst()) != null) {
+                    double idf = index.get(element.getFirst()).getFirst();
+                    double wniq = (element.getSecond() * idf) / wniqSum;
+                    element.setSecond(wniq);
+                }
             }
         }
     }
