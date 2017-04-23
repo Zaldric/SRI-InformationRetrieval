@@ -230,6 +230,7 @@ public class Main {
                     }
 
                 } else {
+                    System.out.println("");
                     System.out.println("No relevant documents found.");
                 }
 
