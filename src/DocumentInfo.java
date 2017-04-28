@@ -71,9 +71,15 @@ class DocumentInfo implements Serializable{
     String searchFullQuery(String[] words) {
 
         for (int i = 0; i < cleanPhrases.size(); ++i) {
+            String[] phraseWords = cleanPhrases.get(i).split("\\s+");
+
             for (int j = 0; j < words.length; ++j) {
-                if (cleanPhrases.get(i).contains(words[j])) {
-                    return phrases.get(i);
+
+                for (int k = 0; k < phraseWords.length; ++k) {
+                    if (phraseWords[k].equals(words[j])) {
+
+                        return phrases.get(i);
+                    }
                 }
             }
         }
