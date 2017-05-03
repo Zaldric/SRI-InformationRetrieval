@@ -9,9 +9,9 @@ import java.util.*;
 class Utils {
 
     private Index index;
-    private HashMap<String, Double> words;
-    private HashMap<String, Integer> stopWords;
-    private Pair<String, Integer> max, min;
+    private HashMap<String, Double> wordsFrequency;
+    private Set<String> stopWords;
+    private Pair<String, Integer> maxFrequency, minFrequency;
 
     /**
      * Creates a new Index object with:
@@ -23,12 +23,12 @@ class Utils {
      */
     Utils() throws IOException {
 
-        words = new HashMap<>();
-        stopWords = new HashMap<>();
+        wordsFrequency = new HashMap<>();
+        stopWords = new HashSet<>();
         index = new Index();
         loadStopWords();
-        max = new Pair<>("", 0);
-        min = new Pair<>("", 999999999);
+        maxFrequency = new Pair<>("", 0);
+        minFrequency = new Pair<>("", 999999999);
     }
 
     /**
@@ -87,31 +87,31 @@ class Utils {
                 if (!word.equals("-")) {
                     fw.write(word + "\r\n");
                     ++numberOfTokens;
-                    if (this.words.get(word) == null) {
-                        this.words.put(word, 1.0);
+                    if (this.wordsFrequency.get(word) == null) {
+                        this.wordsFrequency.put(word, 1.0);
                     } else {
-                        this.words.replace(word, this.words.get(word) + 1.0);
+                        this.wordsFrequency.replace(word, this.wordsFrequency.get(word) + 1.0);
                     }
                 }
             }
         }
 
-        if (numberOfTokens < min.getSecond()) {
-            min.setSecond(numberOfTokens);
-            min.setFirst(path.getName());
+        if (numberOfTokens < minFrequency.getSecond()) {
+            minFrequency.setSecond(numberOfTokens);
+            minFrequency.setFirst(path.getName());
         }
-        if (numberOfTokens > max.getSecond()) {
-            max.setSecond(numberOfTokens);
-            max.setFirst(path.getName());
+        if (numberOfTokens > maxFrequency.getSecond()) {
+            maxFrequency.setSecond(numberOfTokens);
+            maxFrequency.setFirst(path.getName());
         }
 
         return numberOfTokens;
     }
 
     /**
-     * Saves all the non stop words of a document in the index of words.
+     * Saves all the non stop wordsFrequency of a document in the index of wordsFrequency.
      *
-     * @param words  an array with all the words of the document.
+     * @param words  an array with all the wordsFrequency of the document.
      * @param document  the name of the document.
      */
     private void loadWords(String words[], String document) {
@@ -119,14 +119,14 @@ class Utils {
         document = FilenameUtils.removeExtension(document) + ".html";
 
         for (int i = 0; i < words.length; ++i) {
-            if (stopWords.get(words[i]) == null) {
+            if (!stopWords.contains(words[i])) {
                 this.index.add(words[i], document);
             }
         }
     }
 
     /**
-     * Load all the spanish stop words in a HashMap from the file "StopWords.txt" (if exist).
+     * Load all the spanish stop wordsFrequency in a HashMap from the file "StopWords.txt" (if exist).
      */
     private void loadStopWords() throws IOException {
 
@@ -141,20 +141,20 @@ class Utils {
         file = new File("StopWords.txt");
         fr = new FileReader(file);
         br = new BufferedReader(fr);
-        String text;
-        text = br.readLine();
+        String stopWord;
+        stopWord = br.readLine();
 
-        while (text != null) {
-            stopWords.put(text, 0);
-            text = br.readLine();
+        while (stopWord != null) {
+            stopWords.add(stopWord);
+            stopWord = br.readLine();
         }
     }
 
     /**
-     * Gets all the words of a document and saves them in a String.
+     * Gets all the wordsFrequency of a document and saves them in a String.
      *
      * @param path  the path where the document is located.
-     * @return      A String array with the stem of the words of the document.
+     * @return      A String array with the stem of the wordsFrequency of the document.
      */
     private String getDocumentText(File path) throws  Exception {
 
@@ -164,7 +164,7 @@ class Utils {
         String line;
 
         while ((line = br.readLine()) != null) {
-            if (this.stopWords.get(line) == null) {
+            if (!stopWords.contains(line)) {
                 sb.append(line);
                 sb.append(" ");
             }
@@ -174,10 +174,10 @@ class Utils {
     }
 
     /**
-     * Gets all the non stop words of a document and saves them in a String array.
+     * Gets all the non stop wordsFrequency of a document and saves them in a String array.
      *
      * @param text  the text to be cleaned.
-     * @return      A String array with the non stop words of the document.
+     * @return      A String array with the non stop wordsFrequency of the document.
      */
     String[] removeStopWords(String text) {
 
@@ -185,7 +185,7 @@ class Utils {
         String[] words = text.split("\\s+");
 
         for (String word : words) {
-            if (this.stopWords.get(word) == null) {
+            if (!stopWords.contains(word)) {
                 nonStopWords.add(word);
             }
         }
@@ -197,7 +197,7 @@ class Utils {
     }
 
     /**
-     * Removes all the stop words of a document and writes the resultant tokens in the path
+     * Removes all the stop wordsFrequency of a document and writes the resultant tokens in the path
      * 'stopper/document.txt'.
      *
      * @param path  the path where the document is located.
@@ -211,22 +211,22 @@ class Utils {
 
         try (FileWriter fw = new FileWriter(log)) {
             for (int i = 0; i < words.length; ++i) {
-                if (this.stopWords.get(words[i]) == null) {
+                if (!stopWords.contains(words[i])) {
                     fw.write(words[i] + "\r\n");
-                    if (this.words.get(words[i]) == null) {
-                        this.words.put(words[i], 1.0);
+                    if (this.wordsFrequency.get(words[i]) == null) {
+                        this.wordsFrequency.put(words[i], 1.0);
                     } else {
-                        this.words.replace(words[i], this.words.get(words[i]) + 1.0);
+                        this.wordsFrequency.replace(words[i], this.wordsFrequency.get(words[i]) + 1.0);
                     }
                 }
             }
         }
 
-        if (words.length < min.getSecond()) {
-            min.setSecond(words.length);
+        if (words.length < minFrequency.getSecond()) {
+            minFrequency.setSecond(words.length);
         }
-        if (words.length > max.getSecond()) {
-            max.setSecond(words.length);
+        if (words.length > maxFrequency.getSecond()) {
+            maxFrequency.setSecond(words.length);
         }
 
         return words.length;
@@ -241,9 +241,9 @@ class Utils {
     }
 
     /**
-     * Gets all the stem words of the  document's tokens.
+     * Gets all the stem wordsFrequency of the  document's tokens.
      *
-     * @param words  the words to apply the stemmer.
+     * @param words  the wordsFrequency to apply the stemmer.
      */
     void stemmer(String[] words) throws  Exception {
 
@@ -268,6 +268,7 @@ class Utils {
         String text = getDocumentText(path);
         String[] words = text.split("\\s+");
         stemmer(words);
+        index.addWords(FilenameUtils.removeExtension(path.getName()) + ".html", words);
 
         setFreq(path.getName(), words);
         loadWords(words, path.getName());
@@ -277,44 +278,44 @@ class Utils {
             for (int i = 0; i < words.length; ++i) {
                 fw.write(words[i] + "\r\n");
 
-                if (this.words.get(words[i]) == null) {
-                    this.words.put(words[i], 1.0);
+                if (this.wordsFrequency.get(words[i]) == null) {
+                    this.wordsFrequency.put(words[i], 1.0);
 
                 } else {
 
-                    this.words.replace(words[i], this.words.get(words[i]) + 1.0);
+                    this.wordsFrequency.replace(words[i], this.wordsFrequency.get(words[i]) + 1.0);
                 }
             }
         }
 
-        if (words.length < min.getSecond()) {
-            min.setSecond(words.length);
+        if (words.length < minFrequency.getSecond()) {
+            minFrequency.setSecond(words.length);
         }
 
-        if (words.length > max.getSecond()) {
-            max.setSecond(words.length);
+        if (words.length > maxFrequency.getSecond()) {
+            maxFrequency.setSecond(words.length);
         }
 
         return words.length;
     }
 
     /**
-     * Copy all the words with their frequencies in an ArrayList and sort them using quicksort.
+     * Copy all the wordsFrequency with their frequencies in an ArrayList and sort them using quicksort.
      *
-     * @return      an array with all the words of the collection sorted highest to lowest (by frequency).
+     * @return      an array with all the wordsFrequency of the collection sorted highest to lowest (by frequency).
      */
     ArrayList<Pair<String, Double>> getTopWords() {
 
         ArrayList<Pair<String, Double>> array = new ArrayList<>();
 
-        for (Map.Entry<String, Double> entry : words.entrySet()) {
+        for (Map.Entry<String, Double> entry : wordsFrequency.entrySet()) {
             Pair<String, Double> pair = new Pair<>(entry.getKey(), entry.getValue());
             array.add(pair);
         }
 
         QuickSort quickSort = new QuickSort();
         quickSort.sort(array);
-        words.clear();
+        wordsFrequency.clear();
 
         return array;
     }
@@ -336,27 +337,27 @@ class Utils {
      * First:   name of the document.
      * Second:  number of tokens.
      */
-    Pair<String, Integer> getMax() { return max;}
+    Pair<String, Integer> getMaxFrequency() { return maxFrequency;}
 
     /**
      * @return A pair with the document with the minimum number of tokens in the collection:
      * First:   name of the document.
      * Second:  number of tokens.
      */
-    Pair<String, Integer> getMin() { return min;}
+    Pair<String, Integer> getMinFrequency() { return minFrequency;}
 
     /**
      * Resets the value of the pairs for getting the maximum and minimum values of tokens in the collection.
      */
     void resetMaxMin() {
 
-        max.setSecond(0);
-        min.setSecond(999999999);
+        maxFrequency.setSecond(0);
+        minFrequency.setSecond(999999999);
     }
 
     /**
      * The structure of the index is a HashMap:
-     * The HashMap contains all the different words in the collection and for each word there is a Pair with:
+     * The HashMap contains all the different wordsFrequency in the collection and for each word there is a Pair with:
      * First: the idf value of that word.
      * Second: a HashMap with the documents that contains that word and the wn value for the word in that document.
      *

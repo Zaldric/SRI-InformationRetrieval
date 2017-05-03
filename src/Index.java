@@ -131,6 +131,14 @@ class Index implements Serializable{
     void addDocument(String document, DocumentInfo documentInfo) { documents.put(document, documentInfo); }
 
     /**
+     * Adds the document's words to the index.
+     *
+     * @param document  the name of the document.
+     * @param words the document's words.
+     */
+    void addWords(String document, String[] words) { documents.get(document).setWordsFrequency(words); }
+
+    /**
      * @return The Index of words of the document collection.
      */
     HashMap<String, Pair<Double, HashMap<String, Double>>> getIndex() { return  words; }
@@ -156,6 +164,7 @@ class Index implements Serializable{
      */
     int getNumberOfWords() { return words.size(); }
 
+    String getTopWords (String document, int number) { return documents.get(document).getTopWords(number); }
 
     /**
      * @return A HashMap with all the documents's collection.

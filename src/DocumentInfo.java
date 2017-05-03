@@ -4,12 +4,15 @@ import java.io.Serializable;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 class DocumentInfo implements Serializable{
 
     private String title;
     private ArrayList<String> phrases;
     private ArrayList<String> cleanPhrases;
+    private ArrayList<Pair<String, Double>> wordsFrequency;
 
     /**
      * Creates a new DocumentInfo object with:
@@ -26,6 +29,7 @@ class DocumentInfo implements Serializable{
         this.title = title;
         phrases = new ArrayList<>();
         cleanPhrases = new ArrayList<>();
+        wordsFrequency = new ArrayList<>();
         setPhrases(originalBody);
     }
 
@@ -85,6 +89,50 @@ class DocumentInfo implements Serializable{
         }
 
         return "";
+    }
+
+    /**
+     * Gets all the document's words and their frequencies into the wordsFrequency array and sort it
+     * highest to lowest using quicksort.
+     *
+     * @param words the document's words.
+     */
+    void setWordsFrequency(String[] words) {
+
+        HashMap<String, Double> wordsFrequency = new HashMap<>();
+
+        for (String word : words) {
+
+            if (wordsFrequency.get(word) == null) {
+                wordsFrequency.put(word, 0.0);
+            } else {
+                wordsFrequency.replace(word, wordsFrequency.get(word) + 1.0);
+            }
+        }
+
+        for (Map.Entry<String, Double> entry : wordsFrequency.entrySet()) {
+            this.wordsFrequency.add(new Pair<>(entry.getKey(), entry.getValue()));
+        }
+
+        QuickSort quickSort = new QuickSort();
+        quickSort.sort(this.wordsFrequency);
+    }
+
+    /**
+     * Gets a number of top words of the document.
+     *
+     * @param number the number of top words to get from the document.
+     */
+    String getTopWords(int number) {
+
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < number && i < wordsFrequency.size(); ++i) {
+            sb.append(wordsFrequency.get(i).getFirst());
+            sb.append(" ");
+        }
+
+        return sb.toString();
     }
 
     /**
