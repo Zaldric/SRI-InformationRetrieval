@@ -282,6 +282,7 @@ public class Main {
 
             do {
 
+
                 Query query = new Query(index, line);
                 ArrayList<Pair<String, Double>> top = query.similarities();
 
