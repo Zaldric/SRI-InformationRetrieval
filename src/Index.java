@@ -1,7 +1,7 @@
 import java.io.Serializable;
 import java.util.*;
 
-class Index implements Serializable{
+class Index implements Serializable {
 
     private HashMap<String, Pair<Double, HashMap<String, Double>>> words;
     private HashMap<String, DocumentInfo> documents;
@@ -9,7 +9,7 @@ class Index implements Serializable{
 
     /**
      * Creates a new Index object with:
-     *
+     * <p>
      * 1- Words: all the stem words of the documents's collection.
      * 2- Documents: the information of the documents's collection.
      * 3- Frequiencies: the maximun frequency of a word for each document.
@@ -23,15 +23,15 @@ class Index implements Serializable{
 
     /**
      * Inserts a word in the index of words.
-     *
+     * <p>
      * The structure of the index is a HashMap:
      * The HashMap contains all the different words in the collection and for each word there is a Pair with:
-     *
+     * <p>
      * First: the idf value of that word.
      * Second: a HashMap with the documents that contains that word and the wn value for the word in that document
-     *         (before calculating the weights, it contains the word frequency in that document).
+     * (before calculating the weights, it contains the word frequency in that document).
      *
-     * @param word  the word that will be loaded in the index.
+     * @param word     the word that will be loaded in the index.
      * @param document the document that contains the word.
      */
     void add(String word, String document) {
@@ -85,7 +85,7 @@ class Index implements Serializable{
 
     /**
      * Calculates the weights of the index's words.
-     *
+     * <p>
      * Calculating for each word:
      * 1- The IDF value for that word.
      * 2- The WN value for that word in each document that contains that word.
@@ -96,7 +96,7 @@ class Index implements Serializable{
 
         for (Map.Entry<String, Pair<Double, HashMap<String, Double>>> entry : words.entrySet()) {
             double sum = 0;
-            double log = Math.log10( (double) frequencies.size() / entry.getValue().getSecond().size());
+            double log = Math.log10((double) frequencies.size() / entry.getValue().getSecond().size());
             words.get(entry.getKey()).setFirst(log);
 
             for (Map.Entry<String, Double> entry2 : words.get(entry.getKey()).getSecond().entrySet()) {
@@ -121,29 +121,35 @@ class Index implements Serializable{
 
     /**
      * Adds all the documents's information to the Index with all the relevant information about it.
-     *
+     * <p>
      * The documentInfo structure is:
      * 1- Title: title of the document.
      * 2- Phrases: The sentences of the document separated by '.'.
      * 3- CleanPhrases: The sentences of the document cleaned.
      *
-     * @param document  the name of the document.
+     * @param document     the name of the document.
      * @param documentInfo object with all the information about the document.
      */
-    void addDocument(String document, DocumentInfo documentInfo) { documents.put(document, documentInfo); }
+    void addDocument(String document, DocumentInfo documentInfo) {
+        documents.put(document, documentInfo);
+    }
 
     /**
      * Adds the document's words to the index.
      *
-     * @param document  the name of the document.
-     * @param words the document's words.
+     * @param document the name of the document.
+     * @param words    the document's words.
      */
-    void addWords(String document, String[] words) { documents.get(document).setWordsFrequency(words); }
+    void addWords(String document, String[] words) {
+        documents.get(document).setWordsFrequency(words);
+    }
 
     /**
      * @return The Index of words of the document collection.
      */
-    HashMap<String, Pair<Double, HashMap<String, Double>>> getIndex() { return  words; }
+    HashMap<String, Pair<Double, HashMap<String, Double>>> getIndex() {
+        return words;
+    }
 
     /**
      * Returns a Pair with the information of the word in the collection.
@@ -151,25 +157,35 @@ class Index implements Serializable{
      * First: the idf value of that word.
      * Second: a HashMap with the documents that contains that word and the wn value for the word in that document.
      *
-     * @param  key the word to search in the Index.
+     * @param key the word to search in the Index.
      * @return A pair with the information of that word.
      */
-    Pair<Double, HashMap<String, Double>> get(String key) { return words.get(key);}
+    Pair<Double, HashMap<String, Double>> get(String key) {
+        return words.get(key);
+    }
 
     /**
      * @return The number of documents that has the collection.
      */
-    int getTotalDocuments() { return frequencies.size(); }
+    int getTotalDocuments() {
+        return frequencies.size();
+    }
 
     /**
      * @return The number of different words that has the collection of documents.
      */
-    int getNumberOfWords() { return words.size(); }
+    int getNumberOfWords() {
+        return words.size();
+    }
 
-    String getTopWords (String document, int number) { return documents.get(document).getTopWords(number); }
+    String getTopWords(String document, int number) {
+        return documents.get(document).getTopWords(number);
+    }
 
     /**
      * @return A HashMap with all the documents's collection.
      */
-    HashMap<String, DocumentInfo> getDocuments() { return documents; }
+    HashMap<String, DocumentInfo> getDocuments() {
+        return documents;
+    }
 }

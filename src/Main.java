@@ -17,30 +17,18 @@ public class Main {
     static private int programMode, relevantDocumentsQuery, relevantDocumentsPSR, topWordsPSR;
 
     /**
-     * Returns an array with all the parameters for the application.
-     * The structure of the array is:
-     * Pos 0    number of parameters.
-     * Pos 1    path where the collection of documents is located.
-     * Pos 2    type of application (0 to load the index and 1 to search queries).
-     * Pos 3    maximum number of relevant documents for a query.
-     *
-     * @return the array with a parameter per position.
+     * Loads the parameters for the aplication from the file 'confData.json'.
+     * <p>
+     * The parameters are:
+     * <p>
+     * collectionPath: the path where the documents collection is located.
+     * indexPath: the path where the Index is located.
+     * programMode: the program mode (0: generate Index; 1: search queries).
+     * relevantDocumentsQuery: the maximum number of relevant documents for a query.
+     * relevantDocumentsPSR: the maximum number of relevant documents for the PSR.
+     * topWordsPSR: the number of top words for the PSR.
      */
     private static void loadParameters() throws IOException {
-
-        /*
-        FileReader reader = new FileReader("conf.data");
-        BufferedReader br = new BufferedReader(reader);
-        String line = br.readLine();
-        int number = Integer.parseInt(line);
-        String[] parameters = new String[number];
-
-        for (int i = 0; i < number; ++i) {
-            parameters[i] = br.readLine();
-        }
-
-        return  parameters;
-        */
 
         org.json.simple.parser.JSONParser parser = new org.json.simple.parser.JSONParser();
 
@@ -156,10 +144,10 @@ public class Main {
             file4.mkdir();
 
             Utils util = new Utils();
-            int sum = 0;
+            int totalTokens = 0;
             ArrayList<Pair<String, Double>> topWords;
-            File folder = new File(collectionPath);
-            File[] listOfFiles = folder.listFiles();
+            File collection = new File(collectionPath);
+            File[] listOfFiles = collection.listFiles();
 
             long time_start, time_end;
             time_start = System.currentTimeMillis();
@@ -167,14 +155,14 @@ public class Main {
             if (listOfFiles != null) {
 
                 for (File listOfFile : listOfFiles) {
-                    sum += util.extractTokens(listOfFile);
+                    totalTokens += util.extractTokens(listOfFile);
                     util.setDocumentInfo(listOfFile);
                 }
 
                 topWords = util.getTopWords();
                 System.out.println(listOfFiles.length + " files processed.");
-                System.out.println("Total number of tokens: " + sum + ".");
-                System.out.println("Token average per file: " + sum / listOfFiles.length + ".");
+                System.out.println("Total number of tokens: " + totalTokens + ".");
+                System.out.println("Token average per file: " + totalTokens / listOfFiles.length + ".");
                 System.out.println("Maximum tokens: " + util.getMaxFrequency().getSecond() + ".");
                 System.out.println("Minimum tokens: " + util.getMinFrequency().getSecond() + ".");
 
@@ -189,11 +177,11 @@ public class Main {
                 System.out.println();
                 File folder2 = new File("results");
                 File[] listOfFiles2 = folder2.listFiles();
-                sum = 0;
+                totalTokens = 0;
 
                 if (listOfFiles2 != null) {
                     for (File aListOfFiles2 : listOfFiles2) {
-                        sum += util.writeWithoutStopWords(aListOfFiles2);
+                        totalTokens += util.writeWithoutStopWords(aListOfFiles2);
                     }
                 } else {
                     System.err.println("Results directory not found");
@@ -202,8 +190,8 @@ public class Main {
 
                 topWords = util.getTopWords();
                 System.out.println("Statistics after stopper: ");
-                System.out.println("Total number of tokens: " + sum + ".");
-                System.out.println("Token average per file: " + sum / listOfFiles.length + ".");
+                System.out.println("Total number of tokens: " + totalTokens + ".");
+                System.out.println("Token average per file: " + totalTokens / listOfFiles.length + ".");
                 System.out.println("Maximum tokens: " + util.getMaxFrequency().getSecond() + ".");
                 System.out.println("Minimum tokens: " + util.getMinFrequency().getSecond() + ".");
 
@@ -217,12 +205,12 @@ public class Main {
                 System.out.println();
                 File folder3 = new File("stopper");
                 File[] listOfFiles3 = folder3.listFiles();
-                sum = 0;
+                totalTokens = 0;
                 util.resetMaxMin();
 
                 if (listOfFiles3 != null) {
                     for (File aListOfFiles3 : listOfFiles3) {
-                        sum += util.writeStemWords(aListOfFiles3);
+                        totalTokens += util.writeStemWords(aListOfFiles3);
                     }
                 } else {
                     System.err.println("Stopper directory not found");
@@ -231,8 +219,8 @@ public class Main {
 
                 topWords = util.getTopWords();
                 System.out.println("Statistics after stemmer: ");
-                System.out.println("Total number of tokens: " + sum + ".");
-                System.out.println("Token average per file: " + sum / listOfFiles.length + ".");
+                System.out.println("Total number of tokens: " + totalTokens + ".");
+                System.out.println("Token average per file: " + totalTokens / listOfFiles.length + ".");
                 System.out.println("Maximum tokens: " + util.getMaxFrequency().getSecond() + ".");
                 System.out.println("Minimum tokens: " + util.getMinFrequency().getSecond() + ".");
 
@@ -302,10 +290,10 @@ public class Main {
                         sb.append(index.getTopWords(top.get(i).getFirst(), topWordsPSR));
                     }
 
-                    Query query2 = new Query(index, sb.toString());
-                    top = query2.similarities();
+                    Query queryPSR = new Query(index, sb.toString());
+                    top = queryPSR.similarities();
 
-                    printQueriesInfo(top, index, query2.getQuery(), relevantDocumentsQuery);
+                    printQueriesInfo(top, index, queryPSR.getQuery(), relevantDocumentsQuery);
                 }
 
                 System.out.println();

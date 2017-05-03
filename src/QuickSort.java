@@ -25,8 +25,8 @@ class QuickSort {
      * with all the bigger numbers than the pivot in the smaller positions and all
      * the smaller numbers than the pivot in the bigger positions.
      *
-     * @param  lowerIndex lower index to sort the array.
-     * @param  higherIndex higher index to sort the array.
+     * @param lowerIndex  lower index to sort the array.
+     * @param higherIndex higher index to sort the array.
      */
     private void quickSort(int lowerIndex, int higherIndex) {
         int i = lowerIndex;
@@ -63,8 +63,8 @@ class QuickSort {
     /**
      * Swap the two positions of the array given as a parameter.
      *
-     * @param  i first position.
-     * @param  j second position.
+     * @param i first position.
+     * @param j second position.
      */
     private void exchangeNumbers(int i, int j) {
 

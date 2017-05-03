@@ -9,13 +9,13 @@ class Query {
 
     /**
      * Creates a new Query object with:
-     *
+     * <p>
      * 1- Results: An ArrayList<Pair<String, Double>> with:
-     *      First: the name of the document.
-     *      Second: the similarity of that document with the query.
+     * First: the name of the document.
+     * Second: the similarity of that document with the query.
      * 2- Query: An ArrayList<Pair<String, Double>> with the words of the query:
-     *      First: the word (stem word).
-     *      Second: the word's frequency.
+     * First: the word (stem word).
+     * Second: the word's frequency.
      * 3- Index: the Index of the documents's collection.
      */
     Query(Index index, String query) throws Exception {
@@ -110,14 +110,14 @@ class Query {
     /**
      * Calculates the similarity of the documents's collection for a query and returns an
      * ArrayList<Pair<String, Double>> sorted highest to lowest with:
-     *
-     *      First: the name of the document.
-     *      Second: the similarity of that document with the query.
-     *
+     * <p>
+     * First: the name of the document.
+     * Second: the similarity of that document with the query.
+     * <p>
      * Note: If the document dosn't contain any of the query's word, the similarity will be 0.
      *
-     * @return      an array with all the relevant documents and their similarity with the query
-     *              sorted highest to lowest (by frequency).
+     * @return an array with all the relevant documents and their similarity with the query
+     * sorted highest to lowest (by frequency).
      */
     ArrayList<Pair<String, Double>> similarities() {
 
@@ -127,7 +127,7 @@ class Query {
             for (Pair<String, Double> element : query) {
 
                 if (index.get(element.getFirst()) != null) {
-                        wniqNorm += element.getSecond() * element.getSecond();
+                    wniqNorm += element.getSecond() * element.getSecond();
                 }
             }
             wniqNorm = Math.sqrt(wniqNorm);

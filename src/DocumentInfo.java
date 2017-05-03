@@ -1,4 +1,5 @@
 import org.tartarus.snowball.ext.spanishStemmer;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.Normalizer;
@@ -7,7 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-class DocumentInfo implements Serializable{
+class DocumentInfo implements Serializable {
 
     private String title;
     private ArrayList<String> phrases;
@@ -16,13 +17,13 @@ class DocumentInfo implements Serializable{
 
     /**
      * Creates a new DocumentInfo object with:
-     *
+     * <p>
      * 1- Title: title of the document.
      * 2- Phrases: The sentences of the document separated by '.'.
      * 3- CleanPhrases: The sentences of the document cleaned.
      *
-     * @param title  title of the document.
-     * @param originalBody  body of the document (without HTML tags).
+     * @param title        title of the document.
+     * @param originalBody body of the document (without HTML tags).
      */
     DocumentInfo(String title, String originalBody) throws Exception {
 
@@ -38,7 +39,7 @@ class DocumentInfo implements Serializable{
      * ArrayList. Then cleans each phrase (remove special characters, stop words and stemming)
      * and saves it into the cleanPhrases ArrayList.
      *
-     * @param originalBody  body of the document (without HTML tags).
+     * @param originalBody body of the document (without HTML tags).
      */
     private void setPhrases(String originalBody) throws Exception {
 
@@ -70,7 +71,7 @@ class DocumentInfo implements Serializable{
      * some of the words of the query or an empty String if there is no such sentence.
      *
      * @param words the words to search in the document.
-     * @return      a String with the first phrase that contains some of the words.
+     * @return a String with the first phrase that contains some of the words.
      */
     String searchFullQuery(String[] words) {
 
@@ -138,6 +139,8 @@ class DocumentInfo implements Serializable{
     /**
      * @return The title of the document.
      */
-    String getTitle() { return title; }
+    String getTitle() {
+        return title;
+    }
 
 }

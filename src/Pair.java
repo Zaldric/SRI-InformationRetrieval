@@ -1,13 +1,13 @@
 import java.io.Serializable;
 
-class Pair<F,  S> implements Serializable{
+class Pair<F, S> implements Serializable {
 
     private F first;
     private S second;
 
     /**
      * Creates a new Pair object compound by two objects:
-     *
+     * <p>
      * 1- First: the first object of the Pair.
      * 2- Second: the second object of the Pair.
      */
@@ -18,7 +18,6 @@ class Pair<F,  S> implements Serializable{
     }
 
     /**
-     *
      * @param first first member of the pair to set.
      */
     void setFirst(F first) {
@@ -26,7 +25,6 @@ class Pair<F,  S> implements Serializable{
     }
 
     /**
-     *
      * @param second second member of the pair to set.
      */
     void setSecond(S second) {
@@ -36,7 +34,9 @@ class Pair<F,  S> implements Serializable{
     /**
      * @return the first member of the pair.
      */
-    F getFirst() { return first; }
+    F getFirst() {
+        return first;
+    }
 
     /**
      * @return the second member of the pair.

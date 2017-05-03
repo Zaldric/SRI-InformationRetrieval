@@ -1,8 +1,10 @@
 import java.io.*;
+
 import org.apache.commons.io.FilenameUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.tartarus.snowball.ext.spanishStemmer;
+
 import java.text.Normalizer;
 import java.util.*;
 
@@ -15,7 +17,7 @@ class Utils {
 
     /**
      * Creates a new Index object with:
-     *
+     * <p>
      * 1- Index: the Index of the document's collection.
      * 2- StopWords: the stopWords of the spanish language.
      * 3- Max: the document with the maximum number of tokens.
@@ -35,8 +37,8 @@ class Utils {
      * Returns a Document object with all the information of a HTML document. The text without HTML tags
      * can be obtained by using the method .text() on the returned object.
      *
-     * @param path  path where the document is located.
-     * @return      a Document object of the document.
+     * @param path path where the document is located.
+     * @return a Document object of the document.
      */
     private Document extractText(String path) throws Exception {
 
@@ -55,8 +57,8 @@ class Utils {
     /**
      * Removes all the capital letters, special characters and accent marks of a String.
      *
-     * @param text  the text to be cleaned.
-     * @return      a String with the text cleaned of special characters.
+     * @param text the text to be cleaned.
+     * @return a String with the text cleaned of special characters.
      */
     String cleanText(String text) {
 
@@ -72,8 +74,8 @@ class Utils {
      * letters, special characters and accent marks. Writing a word per line in a
      * document in the directory "results".
      *
-     * @param path  the path where the document is located.
-     * @return      the number of tokens of the document.
+     * @param path the path where the document is located.
+     * @return the number of tokens of the document.
      */
     int extractTokens(File path) throws Exception {
 
@@ -111,8 +113,8 @@ class Utils {
     /**
      * Saves all the non stop wordsFrequency of a document in the index of wordsFrequency.
      *
-     * @param words  an array with all the wordsFrequency of the document.
-     * @param document  the name of the document.
+     * @param words    an array with all the wordsFrequency of the document.
+     * @param document the name of the document.
      */
     private void loadWords(String words[], String document) {
 
@@ -131,7 +133,8 @@ class Utils {
     private void loadStopWords() throws IOException {
 
         if (!(new File("StopWords.txt")).exists()) {
-            System.out.println("File StopWords not found");
+            System.err.println("File StopWords not found");
+            System.exit(1);
         }
 
         File file;
@@ -153,10 +156,10 @@ class Utils {
     /**
      * Gets all the wordsFrequency of a document and saves them in a String.
      *
-     * @param path  the path where the document is located.
-     * @return      A String array with the stem of the wordsFrequency of the document.
+     * @param path the path where the document is located.
+     * @return A String array with the stem of the wordsFrequency of the document.
      */
-    private String getDocumentText(File path) throws  Exception {
+    private String getDocumentText(File path) throws Exception {
 
         FileReader reader = new FileReader(path.getAbsolutePath());
         StringBuilder sb = new StringBuilder();
@@ -176,8 +179,8 @@ class Utils {
     /**
      * Gets all the non stop wordsFrequency of a document and saves them in a String array.
      *
-     * @param text  the text to be cleaned.
-     * @return      A String array with the non stop wordsFrequency of the document.
+     * @param text the text to be cleaned.
+     * @return A String array with the non stop wordsFrequency of the document.
      */
     String[] removeStopWords(String text) {
 
@@ -200,8 +203,8 @@ class Utils {
      * Removes all the stop wordsFrequency of a document and writes the resultant tokens in the path
      * 'stopper/document.txt'.
      *
-     * @param path  the path where the document is located.
-     * @return      the number of non stop tokens of the document.
+     * @param path the path where the document is located.
+     * @return the number of non stop tokens of the document.
      */
     int writeWithoutStopWords(File path) throws Exception {
 
@@ -243,9 +246,9 @@ class Utils {
     /**
      * Gets all the stem wordsFrequency of the  document's tokens.
      *
-     * @param words  the wordsFrequency to apply the stemmer.
+     * @param words the wordsFrequency to apply the stemmer.
      */
-    void stemmer(String[] words) throws  Exception {
+    void stemmer(String[] words) throws Exception {
 
         spanishStemmer stemmer = new spanishStemmer();
 
@@ -260,8 +263,8 @@ class Utils {
     /**
      * Writes the tokens in the path 'stemmer/document.txt' after appling the stemmer in them.
      *
-     * @param path  the path where the document is located.
-     * @return      the number of tokens of the document.
+     * @param path the path where the document is located.
+     * @return the number of tokens of the document.
      */
     int writeStemWords(File path) throws Exception {
 
@@ -302,7 +305,7 @@ class Utils {
     /**
      * Copy all the wordsFrequency with their frequencies in an ArrayList and sort them using quicksort.
      *
-     * @return      an array with all the wordsFrequency of the collection sorted highest to lowest (by frequency).
+     * @return an array with all the wordsFrequency of the collection sorted highest to lowest (by frequency).
      */
     ArrayList<Pair<String, Double>> getTopWords() {
 
@@ -323,7 +326,7 @@ class Utils {
     /**
      * Gets all the information about a document and saves it into the Index.
      *
-     * @param path  the path where the document is located.
+     * @param path the path where the document is located.
      */
     void setDocumentInfo(File path) throws Exception {
 
@@ -337,14 +340,18 @@ class Utils {
      * First:   name of the document.
      * Second:  number of tokens.
      */
-    Pair<String, Integer> getMaxFrequency() { return maxFrequency;}
+    Pair<String, Integer> getMaxFrequency() {
+        return maxFrequency;
+    }
 
     /**
      * @return A pair with the document with the minimum number of tokens in the collection:
      * First:   name of the document.
      * Second:  number of tokens.
      */
-    Pair<String, Integer> getMinFrequency() { return minFrequency;}
+    Pair<String, Integer> getMinFrequency() {
+        return minFrequency;
+    }
 
     /**
      * Resets the value of the pairs for getting the maximum and minimum values of tokens in the collection.
@@ -363,6 +370,8 @@ class Utils {
      *
      * @return The index of the collection,
      */
-    Index getIndex() {return index;}
+    Index getIndex() {
+        return index;
+    }
 
 }
