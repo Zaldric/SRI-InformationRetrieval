@@ -3,6 +3,7 @@ import java.io.*;
 import org.apache.commons.io.FilenameUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.tartarus.snowball.ext.spanishStemmer;
 
 import java.text.Normalizer;
@@ -331,7 +332,14 @@ class Utils {
     void setDocumentInfo(File path) throws Exception {
 
         Document document = extractText(path.getAbsolutePath());
-        DocumentInfo documentInfo = new DocumentInfo(document.title(), document.body().text());
+
+        StringBuilder sb = new StringBuilder();
+        for(Element element : document.select("p")) {
+            sb.append(element.text());
+            sb.append(" ");
+        }
+
+        DocumentInfo documentInfo = new DocumentInfo(document.title(), sb.toString());
         index.addDocument(path.getName(), documentInfo);
     }
 

@@ -124,13 +124,28 @@ class DocumentInfo implements Serializable {
      *
      * @param number the number of top words to get from the document.
      */
-    String getTopWords(int number) {
+    String getTopWords(int number, ArrayList<String> usedWords) {
 
         StringBuilder sb = new StringBuilder();
+        boolean used = false;
+        int cont = 0;
 
-        for (int i = 0; i < number && i < wordsFrequency.size(); ++i) {
-            sb.append(wordsFrequency.get(i).getFirst());
-            sb.append(" ");
+        for (int i = 0; i < wordsFrequency.size() && (cont < number); ++i) {
+
+            for (int j = 0; j < usedWords.size(); ++j) {
+                if (usedWords.get(j).equals(wordsFrequency.get(i).getFirst())) {
+                    used = true;
+                }
+            }
+
+            if (!used) {
+                sb.append(wordsFrequency.get(i).getFirst());
+                sb.append(" ");
+                usedWords.add(wordsFrequency.get(i).getFirst());
+                ++cont;
+            }
+
+            used = false;
         }
 
         return sb.toString();

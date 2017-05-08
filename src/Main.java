@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -284,10 +285,13 @@ public class Main {
                     StringBuilder sb = new StringBuilder();
                     sb.append(line);
                     sb.append(" ");
+                    ArrayList<String> usedWords = new ArrayList<>();
+
+                    usedWords.addAll(Arrays.asList(query.getQuery()));
 
                     for (int i = 0; i < relevantDocumentsPSR; ++i) {
 
-                        sb.append(index.getTopWords(top.get(i).getFirst(), topWordsPSR));
+                        sb.append(index.getTopWords(top.get(i).getFirst(), topWordsPSR, usedWords));
                     }
 
                     Query queryPSR = new Query(index, sb.toString());

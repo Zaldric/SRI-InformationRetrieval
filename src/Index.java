@@ -178,8 +178,8 @@ class Index implements Serializable {
         return words.size();
     }
 
-    String getTopWords(String document, int number) {
-        return documents.get(document).getTopWords(number);
+    String getTopWords(String document, int number, ArrayList<String> usedWords) {
+        return documents.get(document).getTopWords(number, usedWords);
     }
 
     /**
